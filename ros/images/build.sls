@@ -2,14 +2,20 @@
 osrf/ubuntu_armhf:trusty:
   dockerng.image_present
 
+# Copy over the dockerfiles to the build directories.
 /home/pi/docker/armhf-indigo-ros-core/Dockerfile:
   file.managed:
     - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
     - makedirs: True
 
-/home/pi/docker/armhf-indigo-ros-base/Dockerfile:
+/home/pi/docker/armhf-indigo-ros-core/Dockerfile:
   file.managed:
-    - source: salt://ros/images/armhf-indigo-ros-base/Dockerfile
+    - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
+    - makedirs: True
+
+/home/pi/docker/armhf-indigo-ros-base/ros_entrypoint.sh:
+  file.managed:
+    - source: salt://ros/images/armhf-indigo-ros-base/ros_entrypoint.sh
     - makedirs: True
 
 # Build our images using `docker build`.
