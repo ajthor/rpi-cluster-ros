@@ -1,4 +1,4 @@
-FROM osrf/ubuntu_armhf
+FROM osrf/ubuntu_armhf:trusty
 # Also try: armv7/armhf-ubuntu:14.04
 
 # setup environment
