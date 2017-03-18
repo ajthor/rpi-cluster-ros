@@ -8,9 +8,9 @@ osrf/ubuntu_armhf:trusty:
     - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
     - makedirs: True
 
-/home/pi/docker/armhf-indigo-ros-core/Dockerfile:
+/home/pi/docker/armhf-indigo-ros-base/Dockerfile:
   file.managed:
-    - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
+    - source: salt://ros/images/armhf-indigo-ros-base/Dockerfile
     - makedirs: True
 
 /home/pi/docker/armhf-indigo-ros-base/ros_entrypoint.sh:
