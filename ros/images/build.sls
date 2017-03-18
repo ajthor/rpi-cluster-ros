@@ -2,10 +2,12 @@
 osrf/ubuntu_armhf:
   dockerng.image_present
 
-dockerfiles:
+core-dockerfile:
   file.managed:
     - name: /home/pi/docker/armhf-indigo-ros-core/Dockerfile
     - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
+
+base-dockerfile:
   file.managed:
     - name: /home/pi/docker/armhf-indigo-ros-base/Dockerfile
     - source: salt://ros/images/armhf-indigo-ros-base/Dockerfile
