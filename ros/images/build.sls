@@ -1,5 +1,5 @@
 # Make sure we have the latest version of the Ubuntu ARM image.
-osrf/ubuntu_armhf:
+osrf/ubuntu_armhf:trusty:
   dockerng.image_present
 
 /home/pi/docker/armhf-indigo-ros-core/Dockerfile:
@@ -16,9 +16,14 @@ osrf/ubuntu_armhf:
 ros/armhf-indigo-ros-core:trusty:
   dockerng.image_present:
     - build: /home/pi/docker/armhf-indigo-ros-core
+    - require:
+      - file: /home/pi/docker/armhf-indigo-ros-core/Dockerfile
     # - dockerfile: salt://ros/images/armhf-indigo-ros-core/Dockerfile
 
 ros/armhf-indigo-ros-base:trusty:
   dockerng.image_present:
     - build: /home/pi/docker/armhf-indigo-ros-base
+    - require:
+      - file: /home/pi/docker/armhf-indigo-ros-base/Dockerfile
+      - dockerng: ros/armhf-indigo-ros-core:trusty
     # - dockerfile: salt://ros/images/armhf-indigo-ros-base/Dockerfile
