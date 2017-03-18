@@ -2,15 +2,15 @@
 osrf/ubuntu_armhf:
   dockerng.image_present
 
-core-dockerfile:
+/home/pi/docker/armhf-indigo-ros-core/Dockerfile:
   file.managed:
-    - name: /home/pi/docker/armhf-indigo-ros-core/Dockerfile
     - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
+    - makedirs: True
 
-base-dockerfile:
+/home/pi/docker/armhf-indigo-ros-base/Dockerfile:
   file.managed:
-    - name: /home/pi/docker/armhf-indigo-ros-base/Dockerfile
     - source: salt://ros/images/armhf-indigo-ros-base/Dockerfile
+    - makedirs: True
 
 # Build our images using `docker build`.
 ros/armhf-indigo-ros-core:trusty:
