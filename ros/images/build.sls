@@ -13,7 +13,7 @@ osrf/ubuntu_armhf:trusty:
 # Clone the Git repo that contains the scripts and files for the registry image.
 https://github.com/osrf/docker_images.git:
   git.latest:
-    - target: /home/pi/docker/ros
+    - target: /home/pi/docker/osrf
     - branch: master
 
 # Modify the files for ARM.
