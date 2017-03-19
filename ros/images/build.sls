@@ -15,6 +15,7 @@ osrf/ubuntu_armhf:trusty:
   file.managed:
     - source: salt://ros/images/armhf-indigo-ros-core/ros_entrypoint.sh
     - makedirs: True
+    - mode: 755
 
 /home/pi/docker/ros/armhf-indigo-ros-base/Dockerfile:
   file.managed:
