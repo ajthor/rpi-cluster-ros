@@ -2,7 +2,7 @@
 # use on the Raspberry Pi.
 
 # Make sure we have the latest version of the Ubuntu ARM image.
-osrf/ubuntu_armhf:trusty:
+osrf/ubuntu_armhf:xenial:
   dockerng.image_present
 
 # Ensure the directory exists.
@@ -17,32 +17,32 @@ https://github.com/osrf/docker_images.git:
     - branch: master
 
 # Modify the files for ARM.
-/home/pi/docker/osrf/ros/indigo/indigo-ros-core/Dockerfile:
+/home/pi/docker/osrf/ros/kinetic/kinetic-ros-core/Dockerfile:
   file.replace:
-    - pattern: FROM ubuntu:trusty
-    - repl: FROM osrf/ubuntu_armhf:trusty
+    - pattern: FROM ubuntu:xenial
+    - repl: FROM osrf/ubuntu_armhf:xenial
     - require:
       - git: https://github.com/osrf/docker_images.git
 
-/home/pi/docker/osrf/ros/indigo/indigo-ros-base/Dockerfile:
+/home/pi/docker/osrf/ros/kinetic/kinetic-ros-base/Dockerfile:
   file.replace:
-    - pattern: FROM ros:indigo-ros-core
-    - repl: FROM ros:armhf-indigo-ros-core
+    - pattern: FROM ros:kinetic-ros-core
+    - repl: FROM ros:armhf-kinetic-ros-core
     - require:
       - git: https://github.com/osrf/docker_images.git
 
 # Build our images using `docker build`.
-ros:armhf-indigo-ros-core:
+ros:armhf-kinetic-ros-core:
   dockerng.image_present:
-    - build: /home/pi/docker/osrf/ros/indigo/indigo-ros-core
+    - build: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-core
     - require:
       - git: https://github.com/osrf/docker_images.git
-      - file: /home/pi/docker/osrf/ros/indigo/indigo-ros-core/Dockerfile
+      - file: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-core/Dockerfile
 
-ros:armhf-indigo-ros-base:
+ros:armhf-kinetic-ros-base:
   dockerng.image_present:
-    - build: /home/pi/docker/osrf/ros/indigo/indigo-ros-base
+    - build: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-base
     - require:
       - git: https://github.com/osrf/docker_images.git
-      - file: /home/pi/docker/osrf/ros/indigo/indigo-ros-base/Dockerfile
-      - dockerng: ros:armhf-indigo-ros-core
+      - file: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-base/Dockerfile
+      - dockerng: ros:armhf-kinetic-ros-core
