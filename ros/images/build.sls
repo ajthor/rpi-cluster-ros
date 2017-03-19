@@ -34,4 +34,4 @@ ros:armhf-indigo-ros-base:
     - build: /home/pi/docker/ros/armhf-indigo-ros-base
     - require:
       - file: /home/pi/docker/ros/armhf-indigo-ros-base/Dockerfile
-      - dockerng: ros/armhf-indigo-ros-core:trusty
+      - dockerng: ros:armhf-indigo-ros-core
