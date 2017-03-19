@@ -66,14 +66,14 @@ gazebo:armhf_gzclient8:
   dockerng.image_present:
     - build: /home/pi/docker/osrf/gazebo/gazebo8/gzclient8
     - require:
-    - git: https://github.com/osrf/docker_images.git
-    - dockerng: gazebo:armhf_gzserver8
-    - file: /home/pi/docker/osrf/gazebo/gazebo8/gzclient8/Dockerfile
+      - git: https://github.com/osrf/docker_images.git
+      - dockerng: gazebo:armhf_gzserver8
+      - file: /home/pi/docker/osrf/gazebo/gazebo8/gzclient8/Dockerfile
 
 gazebo:armhf_gzweb8:
   dockerng.image_present:
     - build: /home/pi/docker/osrf/gazebo/gazebo8/gzweb8
     - require:
-    - git: https://github.com/osrf/docker_images.git
-    - dockerng: gazebo:armhf_libgazebo8
-    - file: /home/pi/docker/osrf/gazebo/gazebo8/gzweb8/Dockerfile
+      - git: https://github.com/osrf/docker_images.git
+      - dockerng: gazebo:armhf_libgazebo8
+      - file: /home/pi/docker/osrf/gazebo/gazebo8/gzweb8/Dockerfile
