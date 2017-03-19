@@ -1,4 +1,4 @@
-FROM ros:armhf-indigo-ros-core
+FROM ros:armhf-indigo-ros-core:trusty
 
 # install ros packages
 RUN apt-get update && apt-get install -y \
