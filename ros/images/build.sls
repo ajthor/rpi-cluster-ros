@@ -31,26 +31,6 @@ https://github.com/osrf/docker_images.git:
     - require:
       - git: https://github.com/osrf/docker_images.git
 
-#
-#     https://github.com/osrf/docker_images.git
-
-# Copy over the dockerfiles to the build directories.
-# /home/pi/docker/ros/armhf-indigo-ros-core/Dockerfile:
-#   file.managed:
-#     - source: salt://ros/images/armhf-indigo-ros-core/Dockerfile
-#     - makedirs: True
-#
-# /home/pi/docker/ros/armhf-indigo-ros-core/ros_entrypoint.sh:
-#   file.managed:
-#     - source: salt://ros/images/armhf-indigo-ros-core/ros_entrypoint.sh
-#     - makedirs: True
-#     - mode: 755
-#
-# /home/pi/docker/ros/armhf-indigo-ros-base/Dockerfile:
-#   file.managed:
-#     - source: salt://ros/images/armhf-indigo-ros-base/Dockerfile
-#     - makedirs: True
-
 # Build our images using `docker build`.
 ros:armhf-indigo-ros-core:
   dockerng.image_present:
