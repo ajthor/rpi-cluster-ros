@@ -1,0 +1,45 @@
+FROM rpi-cluster/python 
+
+# ENV LANG=C.UTF-8 \
+#     ROS_DISTRO=kinetic \
+#     BOOST_ROOT="/usr/lib" \
+#     BOOST_INCLUDE="/usr/include"
+#
+# RUN apk add --no-cache \
+#     ca-certificates \
+#   && apk add --no-cache --virtual .build-deps \
+#     boost-dev \
+#     gnupg \
+#     cmake \
+#     g++ \
+#     gcc \
+#     libgcc \
+#     libstdc++ \
+#     linux-headers \
+#     py2-pip \
+#     make \
+# 		musl-dev
+#
+#   #   openssl-dev \
+#
+# RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 421C365BD9FF1F717815A3895523BAEEB01FA116 \
+#
+# RUN pip install -U \
+#     rosdep \
+#     rosinstall_generator \
+#     wstool \
+#     rosinstall \
+#     empy \
+#   && rosdep init \
+#   && mkdir ~/ros_catkin_ws
+#
+# WORKDIR ~/ros_catkin_ws
+# VOLUME ~/ros_catkin_ws
+#
+# RUN rosinstall_generator ros_comm --rosdistro {{ ros_version }} --deps --wet-only --tar > {{ ros_version }}-ros_comm-wet.rosinstall \
+#   && wstool init -j8 src {{ ros_version }}-ros_comm-wet.rosinstall \
+#   && ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=MinSizeRel
+#
+# rosinstall_generator ros_comm --rosdistro kinetic --deps --wet-only --tar > kinetic-ros_comm-wet.rosinstall \
+# wstool init -j8 src kinetic-ros_comm-wet.rosinstall \
+# && ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release
