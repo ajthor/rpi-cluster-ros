@@ -1,7 +1,7 @@
 
 
 # Make sure we have the latest version of the Ubuntu ARM image.
-osrf/ubuntu_armhf:xenial:
+armhf/ubuntu:xenial:
   dockerng.image_present
 
 # Ensure the directory exists.
@@ -21,7 +21,7 @@ https://github.com/osrf/docker_images.git:
 /home/pi/docker/osrf/gazebo/gazebo8/gzserver8/Dockerfile:
   file.replace:
     - pattern: FROM ubuntu:xenial
-    - repl: FROM osrf/ubuntu_armhf:xenial
+    - repl: FROM armhf/ubuntu:xenial
     - require:
       - git: https://github.com/osrf/docker_images.git
 

@@ -29,8 +29,8 @@ ros-network:
 #     - network_mode: ROS
 #     - cmd: roscore
 
-# $ docker run -it --rm --net ros --name ros-master ros:armhf-indigo-ros-base roscore
-# $ docker service create -t --name roscore --network ROS ros:armhf-indigo-ros-base roscore
+# $ docker run -it --rm --net ros --name ros-master ros:kinetic-ros-base-armhf roscore
+# $ docker service create --name roscore --network ROS ros:armhf-kinetoc-ros-base roscore
 
 # Can specify constraints when starting particular services using
 #

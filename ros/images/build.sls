@@ -27,22 +27,37 @@ https://github.com/osrf/docker_images.git:
 /home/pi/docker/osrf/ros/kinetic/kinetic-ros-base/Dockerfile:
   file.replace:
     - pattern: FROM ros:kinetic-ros-core
-    - repl: FROM ros:armhf-kinetic-ros-core
+    - repl: FROM ros:kinetic-ros-core-armhf
+    - require:
+      - git: https://github.com/osrf/docker_images.git
+
+/home/pi/docker/osrf/ros/kinetic/kinetic-robot/Dockerfile:
+  file.replace:
+    - pattern: FROM ros:kinetic-ros-base
+    - repl: FROM ros:kinetic-ros-base-armhf
     - require:
       - git: https://github.com/osrf/docker_images.git
 
 # Build our images using `docker build`.
-ros:armhf-kinetic-ros-core:
+ros:kinetic-ros-core-armhf:
   dockerng.image_present:
     - build: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-core
     - require:
       - git: https://github.com/osrf/docker_images.git
       - file: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-core/Dockerfile
 
-ros:armhf-kinetic-ros-base:
+ros:kinetic-ros-base-armhf:
   dockerng.image_present:
     - build: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-base
     - require:
       - git: https://github.com/osrf/docker_images.git
       - file: /home/pi/docker/osrf/ros/kinetic/kinetic-ros-base/Dockerfile
-      - dockerng: ros:armhf-kinetic-ros-core
+      - dockerng: ros:kinetic-ros-core-armhf
+
+ros:kinetic-robot-armhf:
+  dockerng.image_present:
+    - build: /home/pi/docker/osrf/ros/kinetic/kinetic-robot
+    - require:
+      - git: https://github.com/osrf/docker_images.git
+      - file: /home/pi/docker/osrf/ros/kinetic/kinetic-robot/Dockerfile
+      - dockerng: ros:kinetic-ros-base-armhf
