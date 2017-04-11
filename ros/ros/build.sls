@@ -1,8 +1,8 @@
-# This file builds local ROS images using an ARM version of Ubuntu Trusty for
-# use on the Raspberry Pi.
+# This file builds local ROS images using an ARM version of Ubuntu for use on
+# the Raspberry Pi.
 
-{% set ros_distro = salt['pillar.get']('drone:ros_distro', 'kinetic') %}
-{% set ubuntu_image = salt['pillar.get']('drone:ubuntu_image', 'osrf/ubuntu_armhf:xenial') %}
+{% set distro = salt['pillar.get']('ros:distro', 'kinetic') %}
+{% set ubuntu_image = salt['pillar.get']('ros:ubuntu_image', 'osrf/ubuntu_armhf:xenial') %}
 
 {% set tmpdir = '/tmp/ros' %}
 
@@ -22,47 +22,47 @@ https://github.com/osrf/docker_images.git:
     - branch: master
 
 # Modify the files for ARM.
-{{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-ros-core/Dockerfile:
+{{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-core/Dockerfile:
   file.replace:
     - pattern: FROM[^\n]*?(?=\n)
     - repl: FROM {{ ubuntu_image }}
     - require:
       - git: https://github.com/osrf/docker_images.git
 
-{{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-ros-base/Dockerfile:
+{{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-base/Dockerfile:
   file.replace:
     - pattern: FROM[^\n]*?(?=\n)
-    - repl: FROM rpi-cluster/ros:{{ ros_distro }}-ros-core
+    - repl: FROM rpi-cluster/ros:{{ distro }}-ros-core
     - require:
       - git: https://github.com/osrf/docker_images.git
 
-{{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-robot/Dockerfile:
+{{ tmpdir }}/ros/{{ distro }}/{{ distro }}-robot/Dockerfile:
   file.replace:
     - pattern: FROM[^\n]*?(?=\n)
-    - repl: FROM rpi-cluster/ros:{{ ros_distro }}-ros-base
+    - repl: FROM rpi-cluster/ros:{{ distro }}-ros-base
     - require:
       - git: https://github.com/osrf/docker_images.git
 
 # Build our images using `docker build`.
-rpi-cluster/ros:{{ ros_distro }}-ros-core:
+rpi-cluster/ros:{{ distro }}-ros-core:
   dockerng.image_present:
-    - build: {{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-ros-core
+    - build: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-core
     - require:
       - git: https://github.com/osrf/docker_images.git
-      - file: {{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-ros-core/Dockerfile
+      - file: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-core/Dockerfile
 
-rpi-cluster/ros:{{ ros_distro }}-ros-base:
+rpi-cluster/ros:{{ distro }}-ros-base:
   dockerng.image_present:
-    - build: {{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-ros-base
+    - build: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-base
     - require:
       - git: https://github.com/osrf/docker_images.git
-      - file: {{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-ros-base/Dockerfile
-      - dockerng: ros:{{ ros_distro }}-ros-core-armhf
+      - file: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-base/Dockerfile
+      - dockerng: rpi-cluster/ros:{{ distro }}-ros-core
 
-rpi-cluster/ros:{{ ros_distro }}-robot:
+rpi-cluster/ros:{{ distro }}-robot:
   dockerng.image_present:
-    - build: {{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-robot
+    - build: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-robot
     - require:
       - git: https://github.com/osrf/docker_images.git
-      - file: {{ tmpdir }}/ros/{{ ros_distro }}/{{ ros_distro }}-robot/Dockerfile
-      - dockerng: ros:{{ ros_distro }}-ros-base-armhf
+      - file: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-robot/Dockerfile
+      - dockerng: rpi-cluster/ros:{{ distro }}-ros-base
