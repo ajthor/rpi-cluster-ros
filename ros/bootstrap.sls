@@ -1,44 +1,14 @@
-# Configure the ROS pillar.
+# This file is meant to be run using Salt orchestrate, using a command such as:
+# `sudo salt-run state.orchestrate ros.bootstrap`
 
-# The `files` variable in jinja holds a list of all of the pillar configuration
-# files which will be added to the master. These should be added without
-# leading slashes, just as you would specify them in the top file.
-{% set files = ['ros/ros', 'ros/gazebo'] %}
-
-{% if grains['host'] == 'rpi-master' %}
-
-# Add pillar files.
-{% for f in files %}
-/srv/pillar/{{ f }}.sls:
-  file.managed:
-    - source: salt://pillar/{{ f }}.sls
-    - makedirs: True
-    - unless: test -f "/srv/pillar/{{ f }}.sls"
-{%- endfor %}
-
-/srv/pillar/top.sls:
-  file.append:
-    - source: salt://pillar/docker.tmpl
-    - template: jinja
-    - defaults:
-        # NOTE: Need extra spaces here to make this work. Add an extra tab for
-        # defaults in file.append states using jinja templating.
-        # https://github.com/saltstack/salt/issues/18686
-        files: {{ files }}
-    - require:
-{% for f in files %}
-      - file: /srv/pillar/{{ f }}.sls
-{%- endfor %}
-
-# Update the Salt pillar.
-update-salt-pillar:
-  salt.function:
-    - name: saltutil.refresh_pillar
+# Configure pillar.
+configure-pillar:
+  salt.state:
+    - sls: ros.pillar
     - tgt: 'rpi-master'
-    - require:
-      - file: /srv/pillar/top.sls
-{% for f in files %}
-      - file: /srv/pillar/{{ f }}.sls
-{%- endfor %}
 
-{% endif %}
+# Install ros.
+install-ros:
+  salt.state:
+    - sls: ros.install
+    - tgt: 'rpi-master'
