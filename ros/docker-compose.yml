@@ -1,0 +1,38 @@
+# The docker-compose file will start your system configuration as you specify.
+# By default, it starts a container running roscore and another which is
+# connected to the master through the networking environment variables.
+{% set distro = salt['pillar.get']('ros:distro', 'kinetic') %}
+
+version: '3'
+
+services:
+  # The master node. This node simply acts as the container for roscore.
+  # Further ROS nodes can connect to the master by specifying the environment
+  # variable: ROS_MASTER_URI=http://master:11311
+  master:
+    image: rpi-cluster/ros:{{ distro }}-ros-core
+    container_name: master
+    expose:
+      - 11311
+    environment:
+      - "ROS_HOSTNAME=master"
+    restart: always
+    command: roscore
+
+  # The worker node has a connection to the master, which it will use to
+  # publish all topics. If you would like to add a persistent volume to the
+  # node, add the lines
+  #
+  # volumes:
+  #   - ./catkin_ws/:/root/catkin_ws/
+  #
+  # to the configuration below.
+  worker:
+    image: rpi-cluster/ros:{{ distro }}-ros-base
+    container_name: worker1
+    environment:
+      - "ROS_HOSTNAME=worker1"
+      - "ROS_MASTER_URI=http://master:11311"
+    depends_on:
+      - master
+    command: roslaunch gazebo_ros empty_world.launch gui:=false headless:=true debug:=true
