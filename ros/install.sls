@@ -2,6 +2,7 @@
 # settings on the targets.
 
 {% set installation_dir = salt['pillar.get']('ros:installation_dir') %}
+{% set distro = salt['pillar.get']('ros:distro', 'kinetic') %}
 
 # Install ros.
 build-ros-images:
@@ -14,3 +15,6 @@ build-ros-images:
   file.managed:
     - source: salt://ros/docker-compose.yml
     - makedirs: True
+    - template: jinja
+    - defaults:
+      distro: {{ distro }}

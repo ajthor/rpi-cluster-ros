@@ -1,8 +1,6 @@
 # The docker-compose file will start your system configuration as you specify.
 # By default, it starts a container running roscore and another which is
 # connected to the master through the networking environment variables.
-{% set distro = salt['pillar.get']('ros:distro', 'kinetic') %}
-
 version: '3'
 
 services:
