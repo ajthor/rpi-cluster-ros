@@ -1,68 +1,33 @@
 # This file builds local ROS images using an ARM version of Ubuntu for use on
 # the Raspberry Pi.
 
-{% set distro = salt['pillar.get']('ros:distro', 'kinetic') %}
-{% set ubuntu_image = salt['pillar.get']('ros:ubuntu_image', 'osrf/ubuntu_armhf:xenial') %}
+{% set distro = salt['pillar.get']('ros:distro') %}
+{% set ubuntu_repo = salt['pillar.get']('ros:ubuntu_repo') %}
 
-{% set tmpdir = '/tmp/ros' %}
+{% set tempdir = salt['cmd.run']('mktemp -d -t ros.XXXXXX') %}
 
-# Make sure we have the latest version of the Ubuntu ARM image.
-osrf/ubuntu_armhf:xenial:
+resin/rpi-raspbian:
   dockerng.image_present
 
-# Ensure the directory exists.
-{{ tmpdir }}:
-  file.directory:
+# Add the Dockerfile from repo.
+{{ tempdir }}/Dockerfile:
+  file.managed:
+    - source: salt://ros/ros/Dockerfile
+    - makedirs: True
+    - template: jinja
+    - defaults:
+      distro: {{ distro }}
+      ubuntu_repo: {{ ubuntu_repo }}
+
+{{ tempdir }}/ros_entrypoint.sh:
+  file.managed:
+    - source: salt://ros/ros/ros_entrypoint.sh
     - makedirs: True
 
-# Clone the Git repo that contains the scripts and files for the registry image.
-https://github.com/osrf/docker_images.git:
-  git.latest:
-    - target: {{ tmpdir }}
-    - branch: master
-
-# Modify the files for ARM.
-{{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-core/Dockerfile:
-  file.replace:
-    - pattern: FROM[^\n]*?(?=\n)
-    - repl: FROM {{ ubuntu_image }}
-    - require:
-      - git: https://github.com/osrf/docker_images.git
-
-{{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-base/Dockerfile:
-  file.replace:
-    - pattern: FROM[^\n]*?(?=\n)
-    - repl: FROM rpi-cluster/ros:{{ distro }}-ros-core
-    - require:
-      - git: https://github.com/osrf/docker_images.git
-
-{{ tmpdir }}/ros/{{ distro }}/{{ distro }}-robot/Dockerfile:
-  file.replace:
-    - pattern: FROM[^\n]*?(?=\n)
-    - repl: FROM rpi-cluster/ros:{{ distro }}-ros-base
-    - require:
-      - git: https://github.com/osrf/docker_images.git
-
-# Build our images using `docker build`.
-rpi-cluster/ros:{{ distro }}-ros-core:
-  dockerng.image_present:
-    - build: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-core
-    - require:
-      - git: https://github.com/osrf/docker_images.git
-      - file: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-core/Dockerfile
-
+# Build the image.
 rpi-cluster/ros:{{ distro }}-ros-base:
   dockerng.image_present:
-    - build: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-base
-    - require:
-      - git: https://github.com/osrf/docker_images.git
-      - file: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-ros-base/Dockerfile
-      - dockerng: rpi-cluster/ros:{{ distro }}-ros-core
-
-rpi-cluster/ros:{{ distro }}-robot:
-  dockerng.image_present:
-    - build: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-robot
-    - require:
-      - git: https://github.com/osrf/docker_images.git
-      - file: {{ tmpdir }}/ros/{{ distro }}/{{ distro }}-robot/Dockerfile
-      - dockerng: rpi-cluster/ros:{{ distro }}-ros-base
+    - build: {{ tempdir }}
+    - onchanges:
+      - file: {{ tempdir }}/Dockerfile
+      - file: {{ tempdir }}/ros_entrypoint.sh
